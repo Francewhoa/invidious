@@ -805,7 +805,7 @@ post "/login" do |env|
         error_message += "User has TFA.\n"
 
         # Prefer Authenticator app and SMS over unsupported protocols
-        if challenge_results[0][-1][0][0][8] != 6 || challenge_results[0][-1][0][0][8] != 9
+        if challenge_results[0][-1][0][0][8] != 6 && challenge_results[0][-1][0][0][8] != 9
           tfa = challenge_results[0][-1][0].as_a.select { |auth_type| auth_type[8] == 6 || auth_type[8] == 9 }[0]
           select_challenge = "[#{challenge_results[0][-1][0].as_a.index(tfa).not_nil!}]"
 
@@ -892,6 +892,8 @@ post "/login" do |env|
 
       login.cookies.add_response_headers(env.response.headers)
 
+      error_message += "Login success."
+      raise ""
       env.redirect referer
     rescue ex
       error_message ||= ""
